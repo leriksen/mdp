@@ -1,0 +1,28 @@
+stages:
+  - stage: terraform_plan
+    displayName: Terraform Plan
+    jobs:
+      - job: terraform_plan
+        displayName: Terraform Plan
+        workspace:
+          clean: all
+        steps:
+          - task: Bash@3
+            displayName: terraform init
+            inputs:
+              targetType: filePath
+              filePath: scripts/terraform_init.sh
+              workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+
+#          - task: DownloadSecureFile@1
+#            name: idfile
+#            inputs:
+#              secureFile: ${{ parameters.id_file }}
+
+          - task: Bash@3
+            displayName: terraform plan
+            name: plan # needed for result later
+            inputs:
+              targetType: filePath
+              filePath: scripts/terraform_plan.sh
+              workingDirectory: $(System.DefaultWorkingDirectory)/terraform
