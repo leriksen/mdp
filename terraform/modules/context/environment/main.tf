@@ -14,5 +14,8 @@ module "subscription" {
   subscription = local.env_sub[var.environment]
 }
 
+locals {
+  mdp_pool_name = format("%s-%s", module.globals.project_name, var.environment)
+}
 
 

@@ -14,3 +14,7 @@ provider "azurerm" {
 provider "azapi" {}
 
 provider "azuread" {}
+
+provider "azuredevops" {
+  org_service_url = module.globals.org_service_url
+}

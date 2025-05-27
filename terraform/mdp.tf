@@ -5,6 +5,12 @@ resource "azapi_resource" "mdp" {
   name      = format("mdp-%s", random_uuid.uuid.result)
   parent_id = azurerm_resource_group.rg.id
   location  = module.globals.location
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.umi.id
+    ]
+  }
   body      = {
     properties = {
       devCenterProjectResourceId = azurerm_dev_center_project.mdp.id
@@ -34,6 +40,9 @@ resource "azapi_resource" "mdp" {
             buffer             = "*"
           }
         ]
+        networkProfile = {
+          subnetId = azurerm_subnet.mdp.id
+        }
       }
       agentProfile = {
         kind = "Stateless"
