@@ -1,8 +1,6 @@
-resource random_uuid "uuid" {}
-
 resource "azapi_resource" "mdp" {
   type      = "Microsoft.DevOpsInfrastructure/pools@2025-01-21"
-  name      = format("mdp-%s", random_uuid.uuid.result)
+  name      = format("mdp-example")
   parent_id = azurerm_resource_group.rg.id
   location  = module.globals.location
   identity {
