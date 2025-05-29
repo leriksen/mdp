@@ -16,6 +16,10 @@ module "subscription" {
 
 locals {
   mdp_pool_name = format("%s-%s", module.globals.project_name, var.environment)
+  akv_sku = {
+    dev = "standard"
+    prd = "premium"
+  }
 }
 
 

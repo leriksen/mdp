@@ -1,10 +1,10 @@
 # resource "azurerm_key_vault" "kv" {
 #   location                      = azurerm_resource_group.rg.location
-#   name                          = format("%s-akv", azurerm_resource_group.rg.name)
+#   name                          = format("%s-akv-%s", lower(azurerm_resource_group.rg.name), lower(var.env))
 #   resource_group_name           = azurerm_resource_group.rg.name
-#   sku_name                      = "premium"
+#   sku_name                      = module.environment.akv_sku
 #   tenant_id                     = data.azurerm_client_config.current.tenant_id
-#   public_network_access_enabled = false
+#   public_network_access_enabled = true
 #   purge_protection_enabled      = false
 #   enable_rbac_authorization     = true
 # }

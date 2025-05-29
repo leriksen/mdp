@@ -14,3 +14,7 @@ output "env_sub" {
 output "mdp_pool_name" {
   value = local.mdp_pool_name
 }
+
+output "akv_sku" {
+  value = local.akv_sku[var.environment]
+}
