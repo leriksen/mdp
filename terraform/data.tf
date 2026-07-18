@@ -5,5 +5,5 @@ data azurerm_client_config "current" {}
 # }
 
 data "azuredevops_agent_pool" "mdp" {
-  name = azapi_resource.mdp.name
+  name = azapi_resource.azdo_mdp.name
 }
