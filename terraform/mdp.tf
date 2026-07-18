@@ -18,7 +18,7 @@ resource "azapi_resource" "azdo_mdp" {
         organizations = [
           {
             url         = "https://dev.azure.com/leiferiksenau"
-            parallelism = 1
+            parallelism = 2
           }
 
         ]

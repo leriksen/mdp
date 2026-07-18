@@ -10,9 +10,15 @@ resource "azuredevops_project" "project" {
   }
 }
 
+resource "azuredevops_agent_pool" "mdp" {
+  name = azapi_resource.azdo_mdp.name
+  auto_provision = false
+  auto_update    = false
+}
+
 resource azuredevops_agent_queue "org_pool_to_mdp" {
   project_id    = azuredevops_project.project.id
-  agent_pool_id = data.azuredevops_agent_pool.mdp.id
+  agent_pool_id = azuredevops_agent_pool.mdp.id
 }
 
 # Grant access to queue to all pipelines in the project
