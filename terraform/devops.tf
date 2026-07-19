@@ -10,20 +10,25 @@ resource "azuredevops_project" "project" {
   }
 }
 
-resource "azuredevops_agent_pool" "mdp" {
-  name = azapi_resource.azdo_mdp.name
-  auto_provision = false
-  auto_update    = false
+data "azuredevops_agent_pool" "mdp" {
+  name       = azapi_resource.azdo_mdp.name
+  depends_on = [azapi_resource.azdo_mdp]
 }
 
-resource azuredevops_agent_queue "org_pool_to_mdp" {
-  project_id    = azuredevops_project.project.id
-  agent_pool_id = azuredevops_agent_pool.mdp.id
+data "azuredevops_projects" "all" {
+  depends_on = [azuredevops_project.project]
 }
 
-# Grant access to queue to all pipelines in the project
+data "azuredevops_agent_queue" "org_pool_to_mdp" {
+  for_each   = { for p in data.azuredevops_projects.all.projects : p.project_id => p if p.state == "wellFormed" }
+  project_id = each.key
+  name       = data.azuredevops_agent_pool.mdp.name
+}
+
+# Grant access to the mdp-azdo queue to all pipelines, in every project
 resource "azuredevops_pipeline_authorization" "all_pipelines" {
-  project_id  = azuredevops_project.project.id
-  resource_id = azuredevops_agent_queue.org_pool_to_mdp.id
+  for_each    = data.azuredevops_agent_queue.org_pool_to_mdp
+  project_id  = each.key
+  resource_id = each.value.id
   type        = "queue"
 }

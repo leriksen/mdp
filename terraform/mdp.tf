@@ -29,15 +29,25 @@ resource "azapi_resource" "azdo_mdp" {
       fabricProfile = {
         kind   = "Vmss"
         sku    = {
-          name = "Standard_D2ads_v5"
+          name = "Standard_D2ds_v5"
         }
         images = [
           {
             ephemeralType      = "Automatic"
-            wellKnownImageName = "ubuntu-24.04"
+            wellKnownImageName = "ubuntu-24.04/latest"
             buffer             = "*"
+            aliases            = [
+              "ubuntu-24.04"
+            ]
           }
         ]
+        osProfile = {
+          secretsManagementSettings = {
+            observedCertificates = []
+            keyExportable = false
+          },
+          logonType = "Service"
+        },
         networkProfile = {
           subnetId = azurerm_subnet.mdp.id
         }
