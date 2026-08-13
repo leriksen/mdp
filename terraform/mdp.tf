@@ -1,6 +1,7 @@
 resource "azapi_resource" "azdo_mdp" {
+  for_each  = local.pools
   type      = "Microsoft.DevOpsInfrastructure/pools@2025-01-21"
-  name      = format("mdp-azdo")
+  name      = format("mdp-azdo-%s", each.key)
   parent_id = azurerm_resource_group.rg.id
   location  = module.globals.location
   identity {
@@ -9,16 +10,16 @@ resource "azapi_resource" "azdo_mdp" {
       azurerm_user_assigned_identity.umi.id
     ]
   }
-  body      = {
+  body = {
     properties = {
       devCenterProjectResourceId = azurerm_dev_center_project.mdp.id
-      maximumConcurrency         = 2
-      organizationProfile        = {
-        kind          = "AzureDevOps"
+      maximumConcurrency         = each.value.maximumConcurrency
+      organizationProfile = {
+        kind = "AzureDevOps"
         organizations = [
           {
             url         = "https://dev.azure.com/leiferiksenau"
-            parallelism = 2
+            parallelism = each.value.parallelism
           }
 
         ]
@@ -27,29 +28,20 @@ resource "azapi_resource" "azdo_mdp" {
         }
       }
       fabricProfile = {
-        kind   = "Vmss"
-        sku    = {
-          name = "Standard_D2ds_v5"
+        kind = "Vmss"
+        sku = {
+          name = each.value.sku
         }
-        images = [
-          {
-            ephemeralType      = "Automatic"
-            wellKnownImageName = "ubuntu-24.04/latest"
-            buffer             = "*"
-            aliases            = [
-              "ubuntu-24.04"
-            ]
-          }
-        ]
+        images = each.value.images
         osProfile = {
           secretsManagementSettings = {
             observedCertificates = []
-            keyExportable = false
+            keyExportable        = false
           },
           logonType = "Service"
         },
         networkProfile = {
-          subnetId = azurerm_subnet.mdp.id
+          subnetId = azurerm_subnet.mdp[each.key].id
         }
       }
       agentProfile = {

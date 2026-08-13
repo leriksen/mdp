@@ -3,11 +3,11 @@ module "globals" {
 }
 
 module "subscription" {
-  source = "./modules/context/subscription"
+  source       = "./modules/context/subscription"
   subscription = "NP"
 }
 
 module "environment" {
-  source = "./modules/context/environment"
+  source      = "./modules/context/environment"
   environment = "dev"
 }
