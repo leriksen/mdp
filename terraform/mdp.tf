@@ -20,6 +20,7 @@ resource "azapi_resource" "azdo_mdp" {
           {
             url         = module.globals.org_service_url
             parallelism = each.value.parallelism
+            openAccess  = true
           }
         ]
         permissionProfile = {
