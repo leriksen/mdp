@@ -4,12 +4,6 @@ resource "azapi_resource" "azdo_mdp" {
   name      = format("mdp-azdo-%s", each.key)
   parent_id = azurerm_resource_group.rg.id
   location  = module.globals.location
-  # identity {
-  #   type = "UserAssigned"
-  #   identity_ids = [
-  #     azurerm_user_assigned_identity.umi.id
-  #   ]
-  # }
   body = {
     properties = {
       devCenterProjectResourceId = azurerm_dev_center_project.mdp.id
@@ -20,7 +14,6 @@ resource "azapi_resource" "azdo_mdp" {
           {
             url         = module.globals.org_service_url
             parallelism = each.value.parallelism
-            openAccess  = true
           }
         ]
         permissionProfile = {
@@ -50,7 +43,7 @@ resource "azapi_resource" "azdo_mdp" {
     }
   }
 }
-#
+
 # resource "azapi_resource" "github_mdp" {
 #   type      = "Microsoft.DevOpsInfrastructure/pools@2025-01-21"
 #   name      = format("mdp-github")
