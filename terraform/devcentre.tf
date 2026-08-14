@@ -12,4 +12,7 @@ resource "azurerm_dev_center_project" "mdp" {
   location            = azurerm_resource_group.rg.location
   name                = "mdp"
   resource_group_name = azurerm_resource_group.rg.name
+  identity {
+    type = "SystemAssigned"
+  }
 }

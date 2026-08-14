@@ -41,20 +41,4 @@ locals {
       ]
     }
   }
-
-  # Keyed by project name so for_each keys are known at plan time even
-  # while the mdp project itself is still being created in the same run.
-  pool_projects = merge(
-    { for p in data.azuredevops_projects.all.projects : p.name => p.project_id if p.state == "wellFormed" },
-    { (azuredevops_project.project.name) = azuredevops_project.project.id },
-  )
-
-  # One queue per project per managed pool, keyed "project:pool".
-  project_pool_queues = {
-    for pair in setproduct(keys(local.pool_projects), keys(local.pools)) :
-    "${pair[0]}:${pair[1]}" => {
-      project_id = local.pool_projects[pair[0]]
-      pool_name  = azapi_resource.azdo_mdp[pair[1]].name
-    }
-  }
 }
